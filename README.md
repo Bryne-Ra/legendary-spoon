@@ -58,6 +58,9 @@ The web app includes the following data visualizations:
 3. **Top 10 Disaster Categories** - A bar chart highlighting the most common disaster-related message categories.
 4. **Most Used Words** - A bar chart and word cloud visualizing the most frequent words in the messages.
 
+## Machine Learning Pipeline
+The machine learning pipeline uses `GridSearchCV` for hyperparameter tuning to find the best model parameters. This ensures that the model is optimized for performance.
+
 ## Version Control and Documentation
 - The project is managed using Git and stored in a GitHub repository.
 - The repository includes multiple commits reflecting the development process.
@@ -65,6 +68,8 @@ The web app includes the following data visualizations:
 
 ## Contribution
 If you'd like to contribute, feel free to submit pull requests or raise issues on GitHub!
+
+You can find the project on GitHub at: [GitHub Repository](https://github.com/Bryne-ra/legendary-spoon)
 
 ---
 Developed as part of the Disaster Response Pipeline Project.
