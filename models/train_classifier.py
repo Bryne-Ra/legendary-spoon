@@ -10,9 +10,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multioutput import MultiOutputClassifier
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import classification_report
-import cloudpickle
+import joblib  # Replaced cloudpickle with joblib for compatibility
 
 # Download NLTK resources and upgrade if necessary
 nltk.download(['punkt', 'stopwords', 'wordnet'], quiet=True)
@@ -41,8 +41,8 @@ def tokenize(text):
 
 
 def build_model():
-    """Construct optimized pipeline with validated best parameters"""
-    return Pipeline([
+    """Construct optimized pipeline with GridSearchCV for hyperparameter tuning."""
+    pipeline = Pipeline([
         ('vect', CountVectorizer(
             tokenizer=tokenize,
             max_features=5000,
@@ -51,15 +51,23 @@ def build_model():
         ('tfidf', TfidfTransformer(use_idf=True)),
         ('clf', MultiOutputClassifier(
             RandomForestClassifier(
-                n_estimators=50,
-                max_depth=None,
-                min_samples_split=2,
                 class_weight='balanced',
-                n_jobs=-1,
                 random_state=42
             )
         ))
     ])
+
+    # Define parameters for GridSearchCV
+    parameters = {
+        'clf__estimator__n_estimators': [50, 100],
+        'clf__estimator__min_samples_split': [2, 4],
+        'clf__estimator__max_depth': [None, 10, 20]
+    }
+
+    # Create GridSearchCV object
+    model = GridSearchCV(pipeline, param_grid=parameters,
+                         cv=3, verbose=2, n_jobs=-1)
+    return model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -74,9 +82,8 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
-    """Persist trained model using robust serialization"""
-    with open(model_filepath, 'wb') as f:
-        cloudpickle.dump(model, f)
+    """Persist trained model using joblib."""
+    joblib.dump(model.best_estimator_, model_filepath)
 
 
 def main():
