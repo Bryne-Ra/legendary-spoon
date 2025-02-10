@@ -59,14 +59,14 @@ def build_model():
 
     # Define parameters for GridSearchCV
     parameters = {
-        'clf__estimator__n_estimators': [50, 100],
-        'clf__estimator__min_samples_split': [2, 4],
-        'clf__estimator__max_depth': [None, 10, 20]
+        'clf__estimator__n_estimators': [50],
+        'clf__estimator__min_samples_split': [2],
+        'clf__estimator__max_depth': [None, 10]
     }
 
-    # Create GridSearchCV object
+    # Create GridSearchCV object with reduced number of parallel jobs
     model = GridSearchCV(pipeline, param_grid=parameters,
-                         cv=3, verbose=2, n_jobs=-1)
+                         cv=3, verbose=2, n_jobs=2)
     return model
 
 
